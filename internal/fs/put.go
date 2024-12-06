@@ -7,13 +7,12 @@ import (
 	"github.com/alist-org/alist/v3/internal/errs"
 	"github.com/alist-org/alist/v3/internal/model"
 	"github.com/alist-org/alist/v3/internal/op"
-	"github.com/alist-org/alist/v3/internal/task"
 	"github.com/pkg/errors"
 	"github.com/xhofe/tache"
 )
 
 type UploadTask struct {
-	task.TaskWithCreator
+	tache.Base
 	storage          driver.Driver
 	dstDirActualPath string
 	file             model.FileStreamer
@@ -34,7 +33,7 @@ func (t *UploadTask) Run() error {
 var UploadTaskManager *tache.Manager[*UploadTask]
 
 // putAsTask add as a put task and return immediately
-func putAsTask(ctx context.Context, dstDirPath string, file model.FileStreamer) (task.TaskInfoWithCreator, error) {
+func putAsTask(dstDirPath string, file model.FileStreamer) (tache.TaskWithInfo, error) {
 	storage, dstDirActualPath, err := op.GetStorageAndActualPath(dstDirPath)
 	if err != nil {
 		return nil, errors.WithMessage(err, "failed get storage")
@@ -50,11 +49,7 @@ func putAsTask(ctx context.Context, dstDirPath string, file model.FileStreamer) 
 		//file.SetReader(tempFile)
 		//file.SetTmpFile(tempFile)
 	}
-	taskCreator, _ := ctx.Value("user").(*model.User) // taskCreator is nil when convert failed
 	t := &UploadTask{
-		TaskWithCreator: task.TaskWithCreator{
-			Creator: taskCreator,
-		},
 		storage:          storage,
 		dstDirActualPath: dstDirActualPath,
 		file:             file,

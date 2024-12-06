@@ -95,11 +95,3 @@ type PrecreateResp struct {
 type CheckLoginResp struct {
 	Errno int `json:"errno"`
 }
-
-type LocateUploadResp struct {
-	Host string `json:"host"`
-}
-
-type CreateResp struct {
-	Errno int `json:"errno"`
-}

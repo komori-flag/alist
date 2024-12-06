@@ -67,9 +67,7 @@ func (d *ChaoXing) Init(ctx context.Context) error {
 }
 
 func (d *ChaoXing) Drop(ctx context.Context) error {
-	if d.cron != nil {
-		d.cron.Stop()
-	}
+	d.cron.Stop()
 	return nil
 }
 
